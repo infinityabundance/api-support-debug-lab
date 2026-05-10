@@ -1,0 +1,23 @@
+{
+  "name": "upstream_401",
+  "description": "Endpoint does not require client auth; the 401 was bubbled up from a downstream feature-flag service. auth_missing rule must NOT fire.",
+  "severity": "medium",
+  "request": {
+    "method": "GET",
+    "url": "https://api.acme-co.example/v1/health",
+    "headers": {
+      "user-agent": "acme-client/0.4.1"
+    }
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"upstream_unauthorized\",\"detail\":\"feature flags returned 401\"}"
+  },
+  "context": {
+    "auth_required": false
+  },
+  "expected_rule_id": null
+}

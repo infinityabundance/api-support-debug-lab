@@ -1,0 +1,19 @@
+{
+  "name": "single_timeout_no_retry",
+  "description": "One isolated timeout entry without retry pattern; not enough evidence for the timeout_retry rule (requires >=2 entries).",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json"
+    },
+    "body": "{\"event\":\"ping\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "client_deadline_ms": 5000
+  },
+  "expected_rule_id": null
+}

@@ -1,0 +1,25 @@
+{
+  "name": "valid_json_schema_fail",
+  "description": "Body is valid JSON but missing the required 'event' field. Out of scope for v0.1.0 rules; bad_json_payload must NOT fire (parser succeeds).",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json"
+    },
+    "body": "{\"order_id\":\"ord_8KZ\"}"
+  },
+  "response": {
+    "status": 422,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"validation_failed\",\"missing\":[\"event\"]}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": null
+}

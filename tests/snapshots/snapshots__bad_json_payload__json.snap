@@ -1,0 +1,41 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "bad_json_payload",
+  "severity": "medium",
+  "primary": {
+    "rule_id": "bad_json_payload",
+    "likely_cause": "Invalid JSON payload",
+    "confidence": 0.95,
+    "evidence": [
+      {
+        "message": "serde_json parse error at line 1 column 47: trailing comma at line 1 column 47",
+        "pointer": {
+          "source": "request.body"
+        }
+      },
+      {
+        "message": "Content-Type was application/json; body could not be parsed",
+        "pointer": {
+          "source": "request.headers.content-type"
+        }
+      },
+      {
+        "message": "Response status 400 confirms server rejected payload",
+        "pointer": {
+          "source": "response.status"
+        }
+      }
+    ],
+    "next_steps": [
+      "Validate the payload against the documented request schema.",
+      "Re-emit the body using a JSON serialiser (avoid hand-built strings).",
+      "If the issue persists, log the raw request bytes before send."
+    ],
+    "escalation": "The request body could not be parsed as JSON. The server rejected the request before any business logic ran. Ask the customer to share the exact bytes they sent and the producer that built them."
+  },
+  "also_considered": [],
+  "reproduction": "curl -X POST https://api.acme-co.example/v1/events \\\n  -H \"authorization: Bearer test_xxxxxxxxxxxxxxxx\" \\\n  -H \"content-type: application/json\" \\\n  -H \"user-agent: acme-client/0.4.1\" \\\n  --data-raw '{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\",}'"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "config_dns_error",
+  "description": "Client targets the wrong API host (typo TLD: 'exemple' vs documented 'example'); DNS resolution fails before TLS.",
+  "severity": "high",
+  "request": {
+    "method": "GET",
+    "url": "https://api.acme-co.exemple/v1/health",
+    "headers": {
+      "user-agent": "acme-client/0.4.1"
+    }
+  },
+  "context": {
+    "auth_required": false,
+    "expected_base_url": "https://api.acme-co.example/v1"
+  },
+  "expected_rule_id": "config_dns_error"
+}

@@ -1,0 +1,41 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "webhook_signature_invalid",
+  "severity": "high",
+  "primary": {
+    "rule_id": "webhook_signature_mismatch",
+    "likely_cause": "Webhook signature does not match recomputed HMAC",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "message": "Provided x-signature (raw): sha256=00000000000000000000000000000000000000000000000000000000deadbeef",
+        "pointer": {
+          "source": "request.headers.x-signature"
+        }
+      },
+      {
+        "message": "Expected (HMAC-SHA256 over '{timestamp}.{body}'): f700578c0b5bfcb596260bf652581eabb9c4bc2332d584b99ec8cdaea0be906f",
+        "pointer": {
+          "source": "computed"
+        }
+      },
+      {
+        "message": "Signing input length: 57 bytes",
+        "pointer": {
+          "source": "computed"
+        }
+      }
+    ],
+    "next_steps": [
+      "Confirm the active signing secret matches the one used by the sender.",
+      "Verify the receiver hashes the raw request body (not a re-serialised copy).",
+      "Inspect any proxy / middleware that may rewrite the body before validation."
+    ],
+    "escalation": "Recomputed HMAC differs from the provided signature. The most common causes are a rotated-but-not-deployed secret, a body being re-serialised (whitespace / key order changes), or a proxy mutating the request. Confirm with the customer which secret revision is active on their side."
+  },
+  "also_considered": [],
+  "reproduction": "curl -X POST https://customer.acme-co.example/hooks/orders \\\n  -H \"content-type: application/json\" \\\n  -H \"user-agent: acme-webhooks/2.1\" \\\n  -H \"x-signature: sha256=00000000000000000000000000000000000000000000000000000000deadbeef\" \\\n  -H \"x-webhook-timestamp: 1762704000\" \\\n  --data-raw '{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}'"
+}

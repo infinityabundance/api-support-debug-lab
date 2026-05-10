@@ -1,0 +1,8 @@
+2026-05-09T19:20:00.000Z INFO  request_id=req_A001 method=POST path=/v1/events attempt=1 status=upstream_timeout latency_ms=2003
+2026-05-09T19:20:00.510Z INFO  request_id=req_B002 method=POST path=/v1/events attempt=1 status=200 latency_ms=84
+2026-05-09T19:20:02.011Z WARN  request_id=req_A001 retrying attempt=1 backoff_ms=200
+2026-05-09T19:20:02.215Z INFO  request_id=req_A001 method=POST path=/v1/events attempt=2 status=upstream_timeout latency_ms=2002
+2026-05-09T19:20:03.001Z INFO  request_id=req_B003 method=POST path=/v1/events attempt=1 status=200 latency_ms=92
+2026-05-09T19:20:04.220Z WARN  request_id=req_A001 retrying attempt=2 backoff_ms=400
+2026-05-09T19:20:04.625Z INFO  request_id=req_A001 method=POST path=/v1/events attempt=3 status=upstream_timeout latency_ms=2001
+2026-05-09T19:20:06.628Z ERROR request_id=req_A001 retries_exhausted client_deadline_ms=5000

@@ -1,0 +1,30 @@
+{
+  "name": "idempotency_200",
+  "description": "Calibration: idempotency-key with hash mismatch but server returned 200 (rare but possible if the server does last-write-wins under the same key). Confidence at the lowest idempotency tier (0.70).",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/payments",
+    "headers": {
+      "authorization": "Bearer t",
+      "content-type": "application/json",
+      "idempotency-key": "evt-cal-200"
+    },
+    "body": "{\"amount\":3000}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"id\":\"py_xx\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "idempotency": {
+      "header": "idempotency-key",
+      "stored_body_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "expected_rule_id": "idempotency_collision"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "idempotency_409",
+  "description": "Calibration: idempotency-key reused with different body, but server returned 409 (conflict) rather than 422. Confidence drops to 0.80 (4xx-but-not-422 tier).",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/payments",
+    "headers": {
+      "authorization": "Bearer t",
+      "content-type": "application/json",
+      "idempotency-key": "evt-cal-409"
+    },
+    "body": "{\"amount\":2000}"
+  },
+  "response": {
+    "status": 409,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"idempotency_conflict\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "idempotency": {
+      "header": "idempotency-key",
+      "stored_body_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "expected_rule_id": "idempotency_collision"
+}

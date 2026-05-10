@@ -1,0 +1,26 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Human)"
+---
+CASE: config_dns_error
+SEVERITY: high
+LIKELY CAUSE: API base URL or hostname does not match documented endpoint
+CONFIDENCE: 0.90
+RULE: config_dns_error
+
+EVIDENCE:
+- Request host: api.acme-co.exemple
+- Documented base host: api.acme-co.example
+- near-miss label: 'exemple' differs from documented 'example' by ≤2 chars (typo?)
+
+REPRODUCTION:
+curl -X GET https://api.acme-co.exemple/v1/health \
+  -H "user-agent: acme-client/0.4.1"
+
+NEXT STEPS:
+1. Confirm the API base URL in the customer's environment configuration.
+2. Run `dig` / `nslookup` against the documented host to rule out DNS issues.
+3. Check for environment variable overrides (staging vs production).
+
+ESCALATION NOTE:
+Customer is targeting a host that does not match the documented API base. The most common causes are a stale base-URL config, a staging endpoint left in production, or a typo in a TLD or subdomain. Verify the deploying revision before assuming a DNS outage.

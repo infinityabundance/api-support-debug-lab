@@ -1,0 +1,24 @@
+{
+  "name": "auth_403_no_401",
+  "description": "Calibration: auth-required route with missing Authorization, but server returned 403 (forbidden) instead of 401. auth_missing should fire with degraded confidence (0.60) because the 401 boost is absent.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"event\":\"ping\"}"
+  },
+  "response": {
+    "status": 403,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"forbidden\"}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": "auth_missing"
+}

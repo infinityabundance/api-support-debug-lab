@@ -1,0 +1,6 @@
+2026-05-09T18:55:00.000Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=1 status=upstream_timeout latency_ms=2003
+2026-05-09T18:55:02.011Z WARN  request_id=req_01HZ05MX retrying attempt=1 backoff_ms=200
+2026-05-09T18:55:02.215Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=2 status=upstream_timeout latency_ms=2002
+2026-05-09T18:55:04.220Z WARN  request_id=req_01HZ05MX retrying attempt=2 backoff_ms=400
+2026-05-09T18:55:04.625Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=3 status=upstream_timeout latency_ms=2001
+2026-05-09T18:55:06.628Z ERROR request_id=req_01HZ05MX retries_exhausted client_deadline_ms=5000

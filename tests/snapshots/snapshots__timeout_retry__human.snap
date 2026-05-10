@@ -1,0 +1,34 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Human)"
+---
+CASE: timeout_retry
+SEVERITY: medium
+LIKELY CAUSE: Upstream timeout with retries exhausted
+CONFIDENCE: 0.90
+RULE: timeout_retry
+
+EVIDENCE:
+- request_id=req_01HZ05MX accounts for 3 timeout entries (max attempt=3)
+- timeout entry: 2026-05-09T18:55:00.000Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=1 status=upstream_timeout latency_ms=2003
+- timeout entry: 2026-05-09T18:55:02.215Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=2 status=upstream_timeout latency_ms=2002
+- timeout entry: 2026-05-09T18:55:04.625Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=3 status=upstream_timeout latency_ms=2001
+- elapsed (derived from log timestamps): 6628 ms across 3 attempts
+- max attempt observed: 3 (suggests retry exhaustion)
+- derived elapsed 6628 ms exceeds documented client deadline 5000 ms
+- documented client deadline: 5000 ms
+
+REPRODUCTION:
+curl -X POST https://api.acme-co.example/v1/events \
+  -H "authorization: Bearer test_xxxxxxxxxxxxxxxx" \
+  -H "content-type: application/json" \
+  -H "idempotency-key: evt-9d4f1a" \
+  --data-raw '{"event":"payment.captured","order_id":"ord_PV2"}'
+
+NEXT STEPS:
+1. Inspect upstream latency for the affected endpoint.
+2. Verify retry policy (max attempts, backoff, jitter).
+3. If the deadline is shorter than upstream p99, raise it or reduce work.
+
+ESCALATION NOTE:
+Client retried the request multiple times before failing. Confirm whether upstream latency spiked, whether the retry budget is appropriate for the documented client deadline, and whether idempotency keys protect against duplicate side effects on retry.

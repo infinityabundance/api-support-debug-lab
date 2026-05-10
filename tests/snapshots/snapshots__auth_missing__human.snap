@@ -1,0 +1,28 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Human)"
+---
+CASE: auth_missing
+SEVERITY: medium
+LIKELY CAUSE: Missing Authorization header
+CONFIDENCE: 0.95
+RULE: auth_missing
+
+EVIDENCE:
+- Authorization header absent in request
+- Endpoint POST https://api.acme-co.example/v1/events flagged auth_required=true
+- Response status 401 Unauthorized
+
+REPRODUCTION:
+curl -X POST https://api.acme-co.example/v1/events \
+  -H "content-type: application/json" \
+  -H "user-agent: acme-client/0.4.1" \
+  --data-raw '{"event":"order.created","order_id":"ord_8KZ"}'
+
+NEXT STEPS:
+1. Add an Authorization: Bearer <token> header to the request.
+2. Confirm the token has not expired.
+3. Verify the token's scope covers the requested operation.
+
+ESCALATION NOTE:
+Customer request failed because the Authorization header was absent. The API rejected the request before payload processing. Ask the customer to retry with a valid bearer token and confirm the token's scope.

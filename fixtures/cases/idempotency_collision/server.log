@@ -1,0 +1,3 @@
+2026-05-09T18:50:11.001Z INFO  request_id=req_01HZ08RT method=POST path=/v1/payments idempotency_key=evt-9d4f1a status=200 latency_ms=82
+2026-05-09T18:55:24.103Z INFO  request_id=req_01HZ08RU method=POST path=/v1/payments idempotency_key=evt-9d4f1a status=422 latency_ms=3 reason=idempotency_body_mismatch
+2026-05-09T18:55:24.103Z DEBUG request_id=req_01HZ08RU stored_sha256=6c052859...75c5e current_sha256=0d525782...265e1

@@ -1,0 +1,34 @@
+{
+  "name": "webhook_signature_invalid_stale",
+  "description": "Ambiguous: webhook with mismatched signature AND timestamp drift outside tolerance. Two rules fire; the orchestrator ranks them by confidence.",
+  "severity": "high",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/orders",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "acme-webhooks/2.1",
+      "x-signature": "sha256=00000000000000000000000000000000000000000000000000000000feedface",
+      "x-webhook-timestamp": "1762704000"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}"
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"signature_invalid\"}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret.txt",
+      "signature_header": "x-signature",
+      "timestamp_header": "x-webhook-timestamp",
+      "tolerance_seconds": 300
+    },
+    "now_unix": 1762708800
+  },
+  "expected_rule_id": "webhook_signature_mismatch"
+}

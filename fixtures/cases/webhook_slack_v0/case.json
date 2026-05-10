@@ -1,0 +1,35 @@
+{
+  "name": "webhook_slack_v0",
+  "description": "Slack-style webhook envelope: 'X-Slack-Signature: v0=<hex>' over 'v0:{ts}:{body}'. The provided signature does not match the recomputed HMAC.",
+  "severity": "high",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/slack",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "Slackbot 1.0 (+https://api.slack.com/robots)",
+      "x-slack-signature": "v0=00000000000000000000000000000000000000000000000000000000deadbeef",
+      "x-slack-request-timestamp": "1762704000"
+    },
+    "body": "{\"event\":\"channel.message\",\"text\":\"hello\"}"
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"signature_invalid\"}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret.txt",
+      "signature_header": "x-slack-signature",
+      "timestamp_header": "x-slack-request-timestamp",
+      "tolerance_seconds": 300,
+      "envelope_format": "slack_v0"
+    },
+    "now_unix": 1762704060
+  },
+  "expected_rule_id": "webhook_signature_mismatch"
+}

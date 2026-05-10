@@ -1,0 +1,28 @@
+{
+  "name": "non_429_high_traffic",
+  "description": "Successful request that happens to expose rate-limit headers; status is 200, not 429. rate_limited rule must NOT fire.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json"
+    },
+    "body": "{\"event\":\"ping\"}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit": "100",
+      "x-ratelimit-remaining": "3",
+      "x-ratelimit-reset": "1762704720"
+    },
+    "body": "{\"accepted\":true}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": null
+}

@@ -1,0 +1,33 @@
+{
+  "name": "webhook_no_secret",
+  "description": "Calibration: webhook context with secret_path pointing to a missing file. webhook_signature_mismatch must NOT fire (load_secret returns None); timestamp is within tolerance, so timestamp_stale also does not fire. Result: unclassified.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/orders",
+    "headers": {
+      "content-type": "application/json",
+      "x-signature": "sha256=00000000000000000000000000000000000000000000000000000000deadbeef",
+      "x-webhook-timestamp": "1762704000"
+    },
+    "body": "{\"event\":\"order.created\"}"
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"signature_invalid\"}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret_does_not_exist.txt",
+      "signature_header": "x-signature",
+      "timestamp_header": "x-webhook-timestamp",
+      "tolerance_seconds": 300
+    },
+    "now_unix": 1762704060
+  },
+  "expected_rule_id": null
+}

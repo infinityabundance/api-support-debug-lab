@@ -1,0 +1,2 @@
+2026-05-09T19:00:00.001Z ERROR request_id=req_01HZ06CL dns_resolve hostname=api.acme-co.exemple result=NXDOMAIN
+2026-05-09T19:00:00.002Z DEBUG request_id=req_01HZ06CL configured_base=https://api.acme-co.exemple/v1 documented_base=https://api.acme-co.example/v1

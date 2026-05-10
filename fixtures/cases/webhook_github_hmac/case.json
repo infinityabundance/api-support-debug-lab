@@ -1,0 +1,34 @@
+{
+  "name": "webhook_github_hmac",
+  "description": "GitHub-style HMAC envelope: 'X-Hub-Signature-256: sha256=<hex>' over the raw body. No timestamp is claimed, so webhook_timestamp_stale cannot fire by construction. The provided signature does not match the recomputed HMAC.",
+  "severity": "high",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/github",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "GitHub-Hookshot/abc123",
+      "x-hub-signature-256": "sha256=00000000000000000000000000000000000000000000000000000000feedface",
+      "x-github-event": "push"
+    },
+    "body": "{\"event\":\"channel.message\",\"text\":\"hello\"}"
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"signature_invalid\"}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret.txt",
+      "signature_header": "x-hub-signature-256",
+      "timestamp_header": "x-hub-signature-256",
+      "tolerance_seconds": 300,
+      "envelope_format": "github_hmac"
+    }
+  },
+  "expected_rule_id": "webhook_signature_mismatch"
+}

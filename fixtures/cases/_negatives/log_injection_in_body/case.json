@@ -1,0 +1,26 @@
+{
+  "name": "log_injection_in_body",
+  "description": "Request body contains JSON that *looks like* a server log line bearing 'timeout' and 'retry'. Demonstrates the rule's input boundary: timeout_retry reads server.log only, never the request body. Must NOT classify.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json"
+    },
+    "body": "{\"event\":\"log.replay\",\"log_lines\":[\"2026-05-09T18:55:00.000Z INFO request_id=req_FAKE attempt=1 status=upstream_timeout latency_ms=2003\",\"2026-05-09T18:55:02.011Z WARN request_id=req_FAKE retrying attempt=1\",\"2026-05-09T18:55:04.625Z INFO request_id=req_FAKE attempt=3 status=upstream_timeout latency_ms=2001\"]}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"accepted\":true}"
+  },
+  "context": {
+    "auth_required": true,
+    "client_deadline_ms": 5000
+  },
+  "expected_rule_id": null
+}

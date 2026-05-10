@@ -1,0 +1,29 @@
+{
+  "name": "rate_limited",
+  "description": "Client exhausted their rate-limit budget; received 429 with Retry-After.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json"
+    },
+    "body": "{\"event\":\"ping\"}"
+  },
+  "response": {
+    "status": 429,
+    "headers": {
+      "content-type": "application/json",
+      "retry-after": "30",
+      "x-ratelimit-limit": "100",
+      "x-ratelimit-remaining": "0",
+      "x-ratelimit-reset": "1762704720"
+    },
+    "body": "{\"error\":\"too_many_requests\",\"message\":\"rate limit exceeded\"}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": "rate_limited"
+}

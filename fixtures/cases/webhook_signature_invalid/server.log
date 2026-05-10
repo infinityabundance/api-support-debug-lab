@@ -1,0 +1,2 @@
+2026-05-09T18:40:00.123Z INFO  request_id=req_01HZ04N9 method=POST path=/hooks/orders status=401 latency_ms=4 reason=signature_invalid
+2026-05-09T18:40:00.123Z DEBUG request_id=req_01HZ04N9 expected_sha256=<recomputed-on-receiver> received_sha256=00000000000000000000000000000000000000000000000000000000deadbeef

@@ -1,0 +1,41 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "config_dns_error",
+  "severity": "high",
+  "primary": {
+    "rule_id": "config_dns_error",
+    "likely_cause": "API base URL or hostname does not match documented endpoint",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "message": "Request host: api.acme-co.exemple",
+        "pointer": {
+          "source": "request.url"
+        }
+      },
+      {
+        "message": "Documented base host: api.acme-co.example",
+        "pointer": {
+          "source": "case.context.expected_base_url"
+        }
+      },
+      {
+        "message": "near-miss label: 'exemple' differs from documented 'example' by ≤2 chars (typo?)",
+        "pointer": {
+          "source": "computed"
+        }
+      }
+    ],
+    "next_steps": [
+      "Confirm the API base URL in the customer's environment configuration.",
+      "Run `dig` / `nslookup` against the documented host to rule out DNS issues.",
+      "Check for environment variable overrides (staging vs production)."
+    ],
+    "escalation": "Customer is targeting a host that does not match the documented API base. The most common causes are a stale base-URL config, a staging endpoint left in production, or a typo in a TLD or subdomain. Verify the deploying revision before assuming a DNS outage."
+  },
+  "also_considered": [],
+  "reproduction": "curl -X GET https://api.acme-co.exemple/v1/health \\\n  -H \"user-agent: acme-client/0.4.1\""
+}

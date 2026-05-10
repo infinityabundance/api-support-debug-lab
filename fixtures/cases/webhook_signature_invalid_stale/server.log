@@ -1,0 +1,2 @@
+2026-05-09T20:00:00.456Z INFO  request_id=req_01HZ05R2 method=POST path=/hooks/orders status=401 latency_ms=5 reason=signature_invalid
+2026-05-09T20:00:00.456Z DEBUG request_id=req_01HZ05R2 timestamp_drift_s=4800 tolerance_s=300 received_sha256=00000000000000000000000000000000000000000000000000000000feedface

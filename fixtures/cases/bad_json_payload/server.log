@@ -1,0 +1,2 @@
+2026-05-09T18:25:11.103Z INFO  request_id=req_01HZ02WYR4PZ method=POST path=/v1/events status=400 latency_ms=1 reason=invalid_json
+2026-05-09T18:25:11.103Z DEBUG request_id=req_01HZ02WYR4PZ json_decode_error="trailing comma at line 1 column 47"

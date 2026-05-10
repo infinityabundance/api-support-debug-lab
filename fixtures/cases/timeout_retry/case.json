@@ -1,0 +1,20 @@
+{
+  "name": "timeout_retry",
+  "description": "Client retried twice; upstream timed out on every attempt and the retry budget exceeded the documented client deadline.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json",
+      "idempotency-key": "evt-9d4f1a"
+    },
+    "body": "{\"event\":\"payment.captured\",\"order_id\":\"ord_PV2\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "client_deadline_ms": 5000
+  },
+  "expected_rule_id": "timeout_retry"
+}

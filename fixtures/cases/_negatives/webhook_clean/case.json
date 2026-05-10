@@ -1,0 +1,34 @@
+{
+  "name": "webhook_clean",
+  "description": "Webhook with a valid signature and fresh timestamp. Both webhook rules must NOT fire.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/orders",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "acme-webhooks/2.1",
+      "x-signature": "sha256=f700578c0b5bfcb596260bf652581eabb9c4bc2332d584b99ec8cdaea0be906f",
+      "x-webhook-timestamp": "1762704000"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"received\":true}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret.txt",
+      "signature_header": "x-signature",
+      "timestamp_header": "x-webhook-timestamp",
+      "tolerance_seconds": 300
+    },
+    "now_unix": 1762704060
+  },
+  "expected_rule_id": null
+}

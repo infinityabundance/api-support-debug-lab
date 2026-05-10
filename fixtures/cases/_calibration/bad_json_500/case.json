@@ -1,0 +1,25 @@
+{
+  "name": "bad_json_500",
+  "description": "Calibration: invalid JSON payload but server returned 500 (server error) rather than 400/422. bad_json_payload still fires because the parser sees the broken bytes; confidence drops to 0.70 because the response status does not corroborate.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer t",
+      "content-type": "application/json"
+    },
+    "body": "{not even json"
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"internal_server_error\"}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": "bad_json_payload"
+}

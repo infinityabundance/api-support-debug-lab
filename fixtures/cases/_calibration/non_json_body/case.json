@@ -1,0 +1,25 @@
+{
+  "name": "non_json_body",
+  "description": "Calibration: non-JSON content type with a non-JSON body. bad_json_payload must NOT fire (the rule gates on Content-Type containing 'application/json'). No other rule applies. Result: unclassified.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/upload",
+    "headers": {
+      "authorization": "Bearer t",
+      "content-type": "text/plain"
+    },
+    "body": "this is not json and that's fine"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/plain"
+    },
+    "body": "ok"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": null
+}

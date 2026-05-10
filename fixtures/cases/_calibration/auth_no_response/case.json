@@ -1,0 +1,17 @@
+{
+  "name": "auth_no_response",
+  "description": "Calibration: auth-required + missing Authorization header, but the case was captured before any response. auth_missing fires at 0.60 (no 401 boost).",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"event\":\"ping\"}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": "auth_missing"
+}

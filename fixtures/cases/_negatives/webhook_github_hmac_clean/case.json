@@ -1,0 +1,34 @@
+{
+  "name": "webhook_github_hmac_clean",
+  "description": "GitHub-style HMAC with a valid signature over the raw body; both webhook rules must NOT fire.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/github",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "GitHub-Hookshot/abc123",
+      "x-hub-signature-256": "sha256=6fb1f7d1907901daf8da94ff8c281f1895d6dc8216735e3f2b9299261500750e",
+      "x-github-event": "push"
+    },
+    "body": "{\"event\":\"channel.message\",\"text\":\"hello\"}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"ok\":true}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret.txt",
+      "signature_header": "x-hub-signature-256",
+      "timestamp_header": "x-hub-signature-256",
+      "tolerance_seconds": 300,
+      "envelope_format": "github_hmac"
+    }
+  },
+  "expected_rule_id": null
+}

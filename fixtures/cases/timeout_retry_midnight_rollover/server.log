@@ -1,0 +1,5 @@
+2026-12-31T23:59:59.500Z INFO  request_id=req_01HZNYE method=POST path=/v1/events attempt=1 status=upstream_timeout latency_ms=2003
+2027-01-01T00:00:00.011Z WARN  request_id=req_01HZNYE retrying attempt=1 backoff_ms=200
+2027-01-01T00:00:00.215Z INFO  request_id=req_01HZNYE method=POST path=/v1/events attempt=2 status=upstream_timeout latency_ms=2002
+2027-01-01T00:00:01.020Z INFO  request_id=req_01HZNYE method=POST path=/v1/events attempt=3 status=upstream_timeout latency_ms=2001
+2027-01-01T00:00:01.500Z ERROR request_id=req_01HZNYE retries_exhausted client_deadline_ms=5000

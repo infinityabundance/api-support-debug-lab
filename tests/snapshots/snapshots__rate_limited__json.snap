@@ -1,0 +1,47 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "rate_limited",
+  "severity": "low",
+  "primary": {
+    "rule_id": "rate_limited",
+    "likely_cause": "Rate limit exceeded",
+    "confidence": 0.95,
+    "evidence": [
+      {
+        "message": "Response status 429 Too Many Requests",
+        "pointer": {
+          "source": "response.status"
+        }
+      },
+      {
+        "message": "X-RateLimit-Remaining: 0",
+        "pointer": {
+          "source": "response.headers.x-ratelimit-remaining"
+        }
+      },
+      {
+        "message": "Retry-After: 30 seconds",
+        "pointer": {
+          "source": "response.headers.retry-after"
+        }
+      },
+      {
+        "message": "X-RateLimit-Reset (epoch): 1762704720",
+        "pointer": {
+          "source": "response.headers.x-ratelimit-reset"
+        }
+      }
+    ],
+    "next_steps": [
+      "Honour the Retry-After header before resending.",
+      "Implement client-side exponential backoff with jitter.",
+      "Reduce request frequency or request a higher quota."
+    ],
+    "escalation": "Customer is hitting the documented rate limit. Confirm whether the spike is intentional (campaign / migration) or a runaway loop, and whether a temporary quota bump is appropriate."
+  },
+  "also_considered": [],
+  "reproduction": "curl -X POST https://api.acme-co.example/v1/events \\\n  -H \"authorization: Bearer test_xxxxxxxxxxxxxxxx\" \\\n  -H \"content-type: application/json\" \\\n  --data-raw '{\"event\":\"ping\"}'"
+}

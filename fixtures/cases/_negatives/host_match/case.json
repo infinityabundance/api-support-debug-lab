@@ -1,0 +1,24 @@
+{
+  "name": "host_match",
+  "description": "Request URL host exactly matches the documented base URL host. config_dns_error rule must NOT fire.",
+  "severity": "low",
+  "request": {
+    "method": "GET",
+    "url": "https://api.acme-co.example/v1/health",
+    "headers": {
+      "user-agent": "acme-client/0.4.1"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"ok\":true}"
+  },
+  "context": {
+    "auth_required": false,
+    "expected_base_url": "https://api.acme-co.example/v1"
+  },
+  "expected_rule_id": null
+}

@@ -1,0 +1,33 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Human)"
+---
+CASE: webhook_signature_invalid_stale
+SEVERITY: high
+LIKELY CAUSE: Webhook signature does not match recomputed HMAC
+CONFIDENCE: 0.92
+RULE: webhook_signature_mismatch
+
+EVIDENCE:
+- Provided x-signature (raw): sha256=00000000000000000000000000000000000000000000000000000000feedface
+- Expected (HMAC-SHA256 over '{timestamp}.{body}'): f700578c0b5bfcb596260bf652581eabb9c4bc2332d584b99ec8cdaea0be906f
+- Signing input length: 57 bytes
+
+REPRODUCTION:
+curl -X POST https://customer.acme-co.example/hooks/orders \
+  -H "content-type: application/json" \
+  -H "user-agent: acme-webhooks/2.1" \
+  -H "x-signature: sha256=00000000000000000000000000000000000000000000000000000000feedface" \
+  -H "x-webhook-timestamp: 1762704000" \
+  --data-raw '{"event":"order.created","order_id":"ord_8KZ"}'
+
+NEXT STEPS:
+1. Confirm the active signing secret matches the one used by the sender.
+2. Verify the receiver hashes the raw request body (not a re-serialised copy).
+3. Inspect any proxy / middleware that may rewrite the body before validation.
+
+ESCALATION NOTE:
+Recomputed HMAC differs from the provided signature. The most common causes are a rotated-but-not-deployed secret, a body being re-serialised (whitespace / key order changes), or a proxy mutating the request. Confirm with the customer which secret revision is active on their side.
+
+ALSO CONSIDERED:
+- webhook_timestamp_stale (confidence 0.90): Webhook timestamp outside tolerance window

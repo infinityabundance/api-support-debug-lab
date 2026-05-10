@@ -1,0 +1,35 @@
+# cargo-release configuration.
+# Run with: cargo install cargo-release && cargo release patch
+#
+# This config is local-only by design: no push, no publish. The act of
+# publishing is a deliberate decision the maintainer makes outside this
+# tooling.
+
+# Do not push to a remote.
+push = false
+
+# Do not publish to crates.io.
+publish = false
+
+# Sign commits and tags if a signing key is available; cargo-release
+# falls back gracefully if not.
+sign-commit = false
+sign-tag = false
+
+# Do not allow releases on a dirty tree.
+allow-branch = ["main"]
+
+# The pre-release commit message references the bumped version and
+# the CHANGELOG entry.
+pre-release-commit-message = "chore: prepare release {{version}}"
+tag-message = "{{crate_name}} {{version}}"
+tag-name = "v{{version}}"
+
+# Verify CHANGELOG was updated by checking that an `[Unreleased]`
+# section exists. Run `cargo test` and `cargo clippy` before any
+# release as belt-and-braces.
+pre-release-hook = ["cargo", "test", "--all-targets"]
+
+# After tagging, do nothing (no push, no publish). The maintainer
+# sanity-checks `git log` and `git tag` and decides what to do next.
+post-release-hook = []

@@ -1,0 +1,29 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Human)"
+---
+CASE: bad_json_payload
+SEVERITY: medium
+LIKELY CAUSE: Invalid JSON payload
+CONFIDENCE: 0.95
+RULE: bad_json_payload
+
+EVIDENCE:
+- serde_json parse error at line 1 column 47: trailing comma at line 1 column 47
+- Content-Type was application/json; body could not be parsed
+- Response status 400 confirms server rejected payload
+
+REPRODUCTION:
+curl -X POST https://api.acme-co.example/v1/events \
+  -H "authorization: Bearer test_xxxxxxxxxxxxxxxx" \
+  -H "content-type: application/json" \
+  -H "user-agent: acme-client/0.4.1" \
+  --data-raw '{"event":"order.created","order_id":"ord_8KZ",}'
+
+NEXT STEPS:
+1. Validate the payload against the documented request schema.
+2. Re-emit the body using a JSON serialiser (avoid hand-built strings).
+3. If the issue persists, log the raw request bytes before send.
+
+ESCALATION NOTE:
+The request body could not be parsed as JSON. The server rejected the request before any business logic ran. Ask the customer to share the exact bytes they sent and the producer that built them.

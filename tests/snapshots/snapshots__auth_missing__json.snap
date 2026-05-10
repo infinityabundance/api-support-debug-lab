@@ -1,0 +1,41 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "auth_missing",
+  "severity": "medium",
+  "primary": {
+    "rule_id": "auth_missing",
+    "likely_cause": "Missing Authorization header",
+    "confidence": 0.95,
+    "evidence": [
+      {
+        "message": "Authorization header absent in request",
+        "pointer": {
+          "source": "request.headers.authorization"
+        }
+      },
+      {
+        "message": "Endpoint POST https://api.acme-co.example/v1/events flagged auth_required=true",
+        "pointer": {
+          "source": "case.context.auth_required"
+        }
+      },
+      {
+        "message": "Response status 401 Unauthorized",
+        "pointer": {
+          "source": "response.status"
+        }
+      }
+    ],
+    "next_steps": [
+      "Add an Authorization: Bearer <token> header to the request.",
+      "Confirm the token has not expired.",
+      "Verify the token's scope covers the requested operation."
+    ],
+    "escalation": "Customer request failed because the Authorization header was absent. The API rejected the request before payload processing. Ask the customer to retry with a valid bearer token and confirm the token's scope."
+  },
+  "also_considered": [],
+  "reproduction": "curl -X POST https://api.acme-co.example/v1/events \\\n  -H \"content-type: application/json\" \\\n  -H \"user-agent: acme-client/0.4.1\" \\\n  --data-raw '{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}'"
+}

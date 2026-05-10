@@ -1,0 +1,34 @@
+{
+  "name": "webhook_stripe_v1",
+  "description": "Stripe-style webhook envelope: 'Stripe-Signature: t=<ts>,v1=<sig>,v0=<sig>'. The provided v1 signature does not match the recomputed HMAC. Demonstrates multi-version envelope parsing.",
+  "severity": "high",
+  "request": {
+    "method": "POST",
+    "url": "https://customer.acme-co.example/hooks/stripe",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "Stripe/1.0 (+https://stripe.com/docs/webhooks)",
+      "stripe-signature": "t=1762704000,v1=00000000000000000000000000000000000000000000000000000000deadbeef,v0=00000000000000000000000000000000000000000000000000000000feedface"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}"
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"signature_invalid\"}"
+  },
+  "context": {
+    "auth_required": false,
+    "webhook": {
+      "secret_path": "secret.txt",
+      "signature_header": "stripe-signature",
+      "timestamp_header": "stripe-signature",
+      "tolerance_seconds": 300,
+      "envelope_format": "stripe_v1"
+    },
+    "now_unix": 1762704060
+  },
+  "expected_rule_id": "webhook_signature_mismatch"
+}

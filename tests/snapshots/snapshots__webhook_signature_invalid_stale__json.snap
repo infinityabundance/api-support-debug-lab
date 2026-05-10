@@ -1,0 +1,67 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "webhook_signature_invalid_stale",
+  "severity": "high",
+  "primary": {
+    "rule_id": "webhook_signature_mismatch",
+    "likely_cause": "Webhook signature does not match recomputed HMAC",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "message": "Provided x-signature (raw): sha256=00000000000000000000000000000000000000000000000000000000feedface",
+        "pointer": {
+          "source": "request.headers.x-signature"
+        }
+      },
+      {
+        "message": "Expected (HMAC-SHA256 over '{timestamp}.{body}'): f700578c0b5bfcb596260bf652581eabb9c4bc2332d584b99ec8cdaea0be906f",
+        "pointer": {
+          "source": "computed"
+        }
+      },
+      {
+        "message": "Signing input length: 57 bytes",
+        "pointer": {
+          "source": "computed"
+        }
+      }
+    ],
+    "next_steps": [
+      "Confirm the active signing secret matches the one used by the sender.",
+      "Verify the receiver hashes the raw request body (not a re-serialised copy).",
+      "Inspect any proxy / middleware that may rewrite the body before validation."
+    ],
+    "escalation": "Recomputed HMAC differs from the provided signature. The most common causes are a rotated-but-not-deployed secret, a body being re-serialised (whitespace / key order changes), or a proxy mutating the request. Confirm with the customer which secret revision is active on their side."
+  },
+  "also_considered": [
+    {
+      "rule_id": "webhook_timestamp_stale",
+      "likely_cause": "Webhook timestamp outside tolerance window",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "message": "x-webhook-timestamp: 1762704000 (4800 behind reference now)",
+          "pointer": {
+            "source": "request.headers.x-webhook-timestamp"
+          }
+        },
+        {
+          "message": "Tolerance is 300 seconds; observed drift 4800 seconds",
+          "pointer": {
+            "source": "case.context.webhook.tolerance_seconds"
+          }
+        }
+      ],
+      "next_steps": [
+        "Check NTP / clock skew between sender and receiver.",
+        "Confirm the timestamp header reflects the time the payload was signed, not the time it was forwarded.",
+        "If retries are stored on disk before delivery, refresh the signature immediately before the actual send."
+      ],
+      "escalation": "Webhook timestamp is outside the configured tolerance. This often indicates clock skew, queued retries that re-send a long-stored payload, or a misconfigured replay window."
+    }
+  ],
+  "reproduction": "curl -X POST https://customer.acme-co.example/hooks/orders \\\n  -H \"content-type: application/json\" \\\n  -H \"user-agent: acme-webhooks/2.1\" \\\n  -H \"x-signature: sha256=00000000000000000000000000000000000000000000000000000000feedface\" \\\n  -H \"x-webhook-timestamp: 1762704000\" \\\n  --data-raw '{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}'"
+}

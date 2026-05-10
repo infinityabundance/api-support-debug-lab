@@ -1,0 +1,26 @@
+{
+  "name": "bad_json_payload",
+  "description": "Client sent a body that is not valid JSON (trailing comma).",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json",
+      "user-agent": "acme-client/0.4.1"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\",}"
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"bad_request\",\"message\":\"could not decode JSON body\"}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": "bad_json_payload"
+}

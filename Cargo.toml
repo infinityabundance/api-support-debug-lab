@@ -1,0 +1,63 @@
+[package]
+name = "api-debug-lab"
+version = "0.4.0"
+edition = "2021"
+rust-version = "1.78"
+description = "Reproducible API troubleshooting fixtures and a Rust diagnostic CLI."
+repository = "https://github.com/infinityabundance/api-support-debug-lab"
+license = "Apache-2.0"
+readme = "README.md"
+keywords = ["api", "debugging", "support", "diagnostics", "cli"]
+categories = ["command-line-utilities", "development-tools::debugging"]
+authors = ["infinityabundance <255699974+infinityabundance@users.noreply.github.com>"]
+
+[[bin]]
+name = "api-debug-lab"
+path = "src/main.rs"
+
+[lib]
+name = "api_debug_lab"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+hex = "0.4"
+hmac = "0.12"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+thiserror = "1.0"
+url = "2.5"
+
+[features]
+# `calibration_canary` enables a regression test that proves the
+# Brier-score check in tests/calibration.rs would catch a real
+# miscalibration. The test simulates a deliberately overconfident
+# `idempotency_collision` rule and asserts the resulting Brier
+# exceeds the threshold. Off by default; CI runs a separate job
+# with this feature enabled.
+calibration_canary = []
+
+[dev-dependencies]
+assert_cmd = "2.0"
+criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+insta = { version = "1.39", features = ["json"] }
+jsonschema = { version = "0.18", default-features = false }
+predicates = "3.1"
+proptest = "1"
+tempfile = "3"
+
+[[bench]]
+name = "diagnose"
+harness = false
+
+[package.metadata.docs.rs]
+all-features = false
+default-target = "x86_64-unknown-linux-gnu"
+rustdoc-args = ["--cfg", "docsrs"]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

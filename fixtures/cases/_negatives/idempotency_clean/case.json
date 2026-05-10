@@ -1,0 +1,30 @@
+{
+  "name": "idempotency_clean",
+  "description": "Same Idempotency-Key, byte-identical body. Idempotency hash matches; idempotency_collision rule must NOT fire.",
+  "severity": "low",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/payments",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json",
+      "idempotency-key": "evt-9d4f1a"
+    },
+    "body": "{\"event\":\"payment.captured\",\"order_id\":\"ord_PV2\",\"amount\":1995}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"id\":\"py_8KZ\",\"status\":\"captured\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "idempotency": {
+      "header": "idempotency-key",
+      "stored_body_sha256": "6c052859999089fe74615f0663c78aa54e6d954f2d85a30e116a94c97fb75c5e"
+    }
+  },
+  "expected_rule_id": null
+}

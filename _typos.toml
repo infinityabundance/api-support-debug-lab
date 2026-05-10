@@ -1,0 +1,22 @@
+# Configuration for crate-ci/typos. Run via:
+#   typos        # local (install with `cargo install typos-cli`)
+#   CI: handled by `typos` job in .github/workflows/ci.yml.
+#
+# Most defaults are good. The allowlist below covers strings that
+# look like typos but are intentional (synthetic domain names,
+# user-facing identifiers, etc.).
+
+[default.extend-words]
+# Synthetic typo'd domain used by config_dns_error fixture; the rule
+# detects this as a near-miss to "example".
+exemple = "exemple"
+# Apache-2.0 NOTICE / SPDX header preferences for these rare words.
+# (none currently)
+
+[files]
+extend-exclude = [
+    "target/**",
+    ".git/**",
+    "tests/snapshots/**",
+    "Cargo.lock",
+]

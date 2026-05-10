@@ -1,0 +1,29 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Human)"
+---
+CASE: rate_limited
+SEVERITY: low
+LIKELY CAUSE: Rate limit exceeded
+CONFIDENCE: 0.95
+RULE: rate_limited
+
+EVIDENCE:
+- Response status 429 Too Many Requests
+- X-RateLimit-Remaining: 0
+- Retry-After: 30 seconds
+- X-RateLimit-Reset (epoch): 1762704720
+
+REPRODUCTION:
+curl -X POST https://api.acme-co.example/v1/events \
+  -H "authorization: Bearer test_xxxxxxxxxxxxxxxx" \
+  -H "content-type: application/json" \
+  --data-raw '{"event":"ping"}'
+
+NEXT STEPS:
+1. Honour the Retry-After header before resending.
+2. Implement client-side exponential backoff with jitter.
+3. Reduce request frequency or request a higher quota.
+
+ESCALATION NOTE:
+Customer is hitting the documented rate limit. Confirm whether the spike is intentional (campaign / migration) or a runaway loop, and whether a temporary quota bump is appropriate.

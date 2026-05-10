@@ -1,0 +1,2 @@
+2026-05-09T20:30:00.789Z INFO  request_id=req_01HZ07SV method=POST path=/hooks/stripe status=401 latency_ms=6 reason=signature_invalid
+2026-05-09T20:30:00.789Z DEBUG request_id=req_01HZ07SV envelope=stripe_v1 v1_provided=00000000...deadbeef v0_provided=00000000...feedface

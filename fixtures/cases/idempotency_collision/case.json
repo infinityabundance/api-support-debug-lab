@@ -1,0 +1,30 @@
+{
+  "name": "idempotency_collision",
+  "description": "Customer reused Idempotency-Key 'evt-9d4f1a' with a different body (amount changed from 1995 to 2095). The server compares the request body's SHA-256 to the stored hash and returns 422 on mismatch.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/payments",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json",
+      "idempotency-key": "evt-9d4f1a"
+    },
+    "body": "{\"event\":\"payment.captured\",\"order_id\":\"ord_PV2\",\"amount\":2095}"
+  },
+  "response": {
+    "status": 422,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": "{\"error\":\"idempotency_key_reused_with_different_body\",\"first_seen_at\":\"2026-05-09T18:50:11Z\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "idempotency": {
+      "header": "idempotency-key",
+      "stored_body_sha256": "6c052859999089fe74615f0663c78aa54e6d954f2d85a30e116a94c97fb75c5e"
+    }
+  },
+  "expected_rule_id": "idempotency_collision"
+}

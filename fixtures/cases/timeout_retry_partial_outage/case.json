@@ -1,0 +1,20 @@
+{
+  "name": "timeout_retry_partial_outage",
+  "description": "Two interleaved request_ids in the same log: req_A times out three times, req_B succeeds on attempt=1. The rule must group by request_id and report the worst offender, not all timeouts pooled.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json",
+      "idempotency-key": "evt-partial-A"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_A\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "client_deadline_ms": 5000
+  },
+  "expected_rule_id": "timeout_retry"
+}

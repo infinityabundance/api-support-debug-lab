@@ -1,0 +1,2 @@
+2026-05-09T18:32:00.001Z INFO  request_id=req_01HZ03MV1J0H method=POST path=/v1/events status=429 latency_ms=1 reason=rate_limit_exceeded
+2026-05-09T18:32:00.001Z DEBUG request_id=req_01HZ03MV1J0H token_id=tok_acme_prod ratelimit_window_s=60 budget_total=100 budget_remaining=0

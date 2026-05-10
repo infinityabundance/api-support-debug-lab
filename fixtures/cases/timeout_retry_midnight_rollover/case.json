@@ -1,0 +1,20 @@
+{
+  "name": "timeout_retry_midnight_rollover",
+  "description": "Three timeouts spanning a midnight UTC boundary. The rule must derive elapsed correctly across day rollover (Howard Hinnant's days_from_civil), reporting ~2000 ms — not a negative number that would result from same-day-only parsing.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "authorization": "Bearer test_xxxxxxxxxxxxxxxx",
+      "content-type": "application/json",
+      "idempotency-key": "evt-rollover-1"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_NYE\"}"
+  },
+  "context": {
+    "auth_required": true,
+    "client_deadline_ms": 5000
+  },
+  "expected_rule_id": "timeout_retry"
+}

@@ -1,0 +1,2 @@
+2026-05-09T21:00:00.111Z INFO  request_id=req_01HZ08SK method=POST path=/hooks/slack status=401 latency_ms=5 reason=signature_invalid
+2026-05-09T21:00:00.111Z DEBUG request_id=req_01HZ08SK envelope=slack_v0 v0_provided=00000000...deadbeef

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:api-debug-lab:cases-v1",
+  "title": "Case",
+  "description": "A single API troubleshooting fixture: request, optional response, and free-form context that rules consume.",
+  "type": "object",
+  "required": ["name", "description", "severity", "request"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Stable identifier; matches the fixture directory name."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "request": { "$ref": "#/$defs/request" },
+    "response": { "$ref": "#/$defs/response" },
+    "context": { "$ref": "#/$defs/context" },
+    "expected_rule_id": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "auth_missing",
+        "bad_json_payload",
+        "config_dns_error",
+        "idempotency_collision",
+        "rate_limited",
+        "timeout_retry",
+        "webhook_signature_mismatch",
+        "webhook_timestamp_stale"
+      ],
+      "description": "Ground-truth label: the rule that should fire as primary, or null if the case must remain unclassified. Used by tests/calibration.rs and tests/calibration_regression.rs as the single source of truth."
+    }
+  },
+  "$defs": {
+    "request": {
+      "type": "object",
+      "required": ["method", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "method": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "body": {
+          "type": ["string", "null"],
+          "description": "Raw request body. Stored as a string so HMAC checks see exactly the bytes the client sent."
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "body": { "type": ["string", "null"] }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "auth_required": { "type": "boolean" },
+        "expected_base_url": { "type": "string", "format": "uri" },
+        "client_deadline_ms": { "type": "integer", "minimum": 0 },
+        "now_unix": { "type": "integer" },
+        "idempotency": { "$ref": "#/$defs/idempotency" },
+        "webhook": { "$ref": "#/$defs/webhook" }
+      }
+    },
+    "webhook": {
+      "type": "object",
+      "required": [
+        "secret_path",
+        "signature_header",
+        "timestamp_header",
+        "tolerance_seconds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "secret_path": { "type": "string", "minLength": 1 },
+        "signature_header": { "type": "string", "minLength": 1 },
+        "timestamp_header": { "type": "string", "minLength": 1 },
+        "tolerance_seconds": { "type": "integer", "minimum": 0 },
+        "envelope_format": {
+          "type": "string",
+          "enum": ["raw", "stripe_v1", "slack_v0", "github_hmac"],
+          "description": "How to parse the signature header. 'raw' (default) takes the value as a hex digest, optionally prefixed 'sha256='. 'stripe_v1' parses 't=<ts>,v1=<sig>,...' envelopes. 'slack_v0' strips a 'v0=' prefix and signs over 'v0:{ts}:{body}'. 'github_hmac' strips 'sha256=' and signs over the raw body with no timestamp (webhook_timestamp_stale cannot fire)."
+        }
+      }
+    },
+    "idempotency": {
+      "type": "object",
+      "required": ["header", "stored_body_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "header": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the idempotency-key header (e.g., 'idempotency-key')."
+        },
+        "stored_body_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Hex-encoded SHA-256 of the body the server originally stored under this idempotency key."
+        }
+      }
+    }
+  }
+}

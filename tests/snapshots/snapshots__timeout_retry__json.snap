@@ -1,0 +1,74 @@
+---
+source: tests/snapshots.rs
+expression: "r.render(Format :: Json)"
+---
+{
+  "case_name": "timeout_retry",
+  "severity": "medium",
+  "primary": {
+    "rule_id": "timeout_retry",
+    "likely_cause": "Upstream timeout with retries exhausted",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "message": "request_id=req_01HZ05MX accounts for 3 timeout entries (max attempt=3)",
+        "pointer": {
+          "source": "server.log"
+        }
+      },
+      {
+        "message": "timeout entry: 2026-05-09T18:55:00.000Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=1 status=upstream_timeout latency_ms=2003",
+        "pointer": {
+          "source": "server.log",
+          "line": 1
+        }
+      },
+      {
+        "message": "timeout entry: 2026-05-09T18:55:02.215Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=2 status=upstream_timeout latency_ms=2002",
+        "pointer": {
+          "source": "server.log",
+          "line": 3
+        }
+      },
+      {
+        "message": "timeout entry: 2026-05-09T18:55:04.625Z INFO  request_id=req_01HZ05MX method=POST path=/v1/events attempt=3 status=upstream_timeout latency_ms=2001",
+        "pointer": {
+          "source": "server.log",
+          "line": 5
+        }
+      },
+      {
+        "message": "elapsed (derived from log timestamps): 6628 ms across 3 attempts",
+        "pointer": {
+          "source": "computed"
+        }
+      },
+      {
+        "message": "max attempt observed: 3 (suggests retry exhaustion)",
+        "pointer": {
+          "source": "server.log"
+        }
+      },
+      {
+        "message": "derived elapsed 6628 ms exceeds documented client deadline 5000 ms",
+        "pointer": {
+          "source": "computed"
+        }
+      },
+      {
+        "message": "documented client deadline: 5000 ms",
+        "pointer": {
+          "source": "case.context.client_deadline_ms"
+        }
+      }
+    ],
+    "next_steps": [
+      "Inspect upstream latency for the affected endpoint.",
+      "Verify retry policy (max attempts, backoff, jitter).",
+      "If the deadline is shorter than upstream p99, raise it or reduce work."
+    ],
+    "escalation": "Client retried the request multiple times before failing. Confirm whether upstream latency spiked, whether the retry budget is appropriate for the documented client deadline, and whether idempotency keys protect against duplicate side effects on retry."
+  },
+  "also_considered": [],
+  "reproduction": "curl -X POST https://api.acme-co.example/v1/events \\\n  -H \"authorization: Bearer test_xxxxxxxxxxxxxxxx\" \\\n  -H \"content-type: application/json\" \\\n  -H \"idempotency-key: evt-9d4f1a\" \\\n  --data-raw '{\"event\":\"payment.captured\",\"order_id\":\"ord_PV2\"}'"
+}

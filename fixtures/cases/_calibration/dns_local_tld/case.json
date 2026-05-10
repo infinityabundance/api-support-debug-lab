@@ -1,0 +1,17 @@
+{
+  "name": "dns_local_tld",
+  "description": "Calibration: hostname uses .local TLD instead of documented .example. Different label count, no near-miss; the TLD-differs branch fires. config_dns_error at 0.75.",
+  "severity": "high",
+  "request": {
+    "method": "GET",
+    "url": "https://api.acme-co.local/v1/health",
+    "headers": {
+      "user-agent": "acme-client/1"
+    }
+  },
+  "context": {
+    "auth_required": false,
+    "expected_base_url": "https://api.acme-co.example/v1"
+  },
+  "expected_rule_id": "config_dns_error"
+}

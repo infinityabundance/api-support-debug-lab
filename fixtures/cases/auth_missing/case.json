@@ -1,0 +1,26 @@
+{
+  "name": "auth_missing",
+  "description": "Client posted to an auth-required endpoint without an Authorization header.",
+  "severity": "medium",
+  "request": {
+    "method": "POST",
+    "url": "https://api.acme-co.example/v1/events",
+    "headers": {
+      "content-type": "application/json",
+      "user-agent": "acme-client/0.4.1"
+    },
+    "body": "{\"event\":\"order.created\",\"order_id\":\"ord_8KZ\"}"
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json",
+      "www-authenticate": "Bearer realm=\"api\""
+    },
+    "body": "{\"error\":\"unauthorized\",\"message\":\"missing bearer token\"}"
+  },
+  "context": {
+    "auth_required": true
+  },
+  "expected_rule_id": "auth_missing"
+}

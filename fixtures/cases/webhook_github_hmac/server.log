@@ -1,0 +1,2 @@
+2026-05-09T22:15:00.222Z INFO  request_id=req_01HZ09GM method=POST path=/hooks/github status=401 latency_ms=4 reason=signature_invalid
+2026-05-09T22:15:00.222Z DEBUG request_id=req_01HZ09GM envelope=github_hmac sha256_provided=00000000...feedface

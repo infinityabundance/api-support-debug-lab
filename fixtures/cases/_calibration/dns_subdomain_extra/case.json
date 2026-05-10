@@ -1,0 +1,17 @@
+{
+  "name": "dns_subdomain_extra",
+  "description": "Calibration: extra 'staging' subdomain prefix. Different label count rules out the near-miss heuristic; config_dns_error fires at the base 0.75 tier.",
+  "severity": "medium",
+  "request": {
+    "method": "GET",
+    "url": "https://staging.api.acme-co.example/v1/health",
+    "headers": {
+      "user-agent": "acme-client/1"
+    }
+  },
+  "context": {
+    "auth_required": false,
+    "expected_base_url": "https://api.acme-co.example/v1"
+  },
+  "expected_rule_id": "config_dns_error"
+}

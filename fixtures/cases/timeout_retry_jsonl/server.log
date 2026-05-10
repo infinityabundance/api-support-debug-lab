@@ -1,0 +1,6 @@
+{"ts":"2026-05-09T19:10:00.000Z","level":"INFO","request_id":"req_01HZ0JLN","method":"POST","path":"/v1/events","attempt":1,"status":"upstream_timeout","latency_ms":2003}
+{"ts":"2026-05-09T19:10:02.011Z","level":"WARN","request_id":"req_01HZ0JLN","msg":"retrying","attempt":1,"backoff_ms":200}
+{"ts":"2026-05-09T19:10:02.215Z","level":"INFO","request_id":"req_01HZ0JLN","method":"POST","path":"/v1/events","attempt":2,"status":"upstream_timeout","latency_ms":2002}
+{"ts":"2026-05-09T19:10:04.220Z","level":"WARN","request_id":"req_01HZ0JLN","msg":"retrying","attempt":2,"backoff_ms":400}
+{"ts":"2026-05-09T19:10:04.625Z","level":"INFO","request_id":"req_01HZ0JLN","method":"POST","path":"/v1/events","attempt":3,"status":"upstream_timeout","latency_ms":2001}
+{"ts":"2026-05-09T19:10:06.628Z","level":"ERROR","request_id":"req_01HZ0JLN","msg":"retries_exhausted","client_deadline_ms":5000}
