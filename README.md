@@ -11,6 +11,19 @@ The artefact answers a single question: *given the same fixtures a real
 support engineer might receive, how does the candidate reproduce, classify,
 and communicate?*
 
+
+## For hiring reviewers
+
+If you have 90 seconds:
+
+1. Run `cargo install api-debug-lab && api-debug-lab diagnose auth_missing`.
+2. Skim `src/rules.rs` for diagnostic rules.
+3. Skim `tests/` for snapshot, property, CLI, oracle, and calibration tests.
+4. Read `docs/confidence_model.md` and `docs/mutation_report.md`.
+
+This project demonstrates Rust tooling, deterministic API diagnosis, support-facing evidence generation, and escalation-quality communication.
+
+
 ## At a glance
 
 ```text
