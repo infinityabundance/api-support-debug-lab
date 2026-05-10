@@ -13,8 +13,12 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 
 fn cmd() -> Command {
+    cmd_in(&PathBuf::from(env!("CARGO_MANIFEST_DIR")))
+}
+
+fn cmd_in(cwd: &std::path::Path) -> Command {
     let mut c = Command::cargo_bin("api-debug-lab").expect("binary built");
-    c.current_dir(PathBuf::from(env!("CARGO_MANIFEST_DIR")));
+    c.current_dir(cwd);
     c
 }
 
@@ -48,6 +52,40 @@ fn list_cases_does_not_leak_negatives() {
         .success()
         .stdout(predicate::str::contains("upstream_401").not())
         .stdout(predicate::str::contains("webhook_clean").not());
+}
+
+#[test]
+fn installed_mode_lists_embedded_fixtures_without_repo_checkout() {
+    let tmp = tempfile::TempDir::new().expect("tmpdir");
+    cmd_in(tmp.path())
+        .arg("list-cases")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("auth_missing"))
+        .stdout(predicate::str::contains("webhook_stripe_v1"))
+        .stdout(predicate::str::contains("webhook_clean").not());
+}
+
+#[test]
+fn installed_mode_diagnoses_embedded_fixture_with_secret() {
+    let tmp = tempfile::TempDir::new().expect("tmpdir");
+    cmd_in(tmp.path())
+        .args(["diagnose", "webhook_signature_invalid"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "Webhook signature does not match recomputed HMAC",
+        ));
+}
+
+#[test]
+fn installed_mode_can_load_embedded_negative_fixture() {
+    let tmp = tempfile::TempDir::new().expect("tmpdir");
+    cmd_in(tmp.path())
+        .args(["diagnose", "webhook_clean"])
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("unclassified"));
 }
 
 #[test]

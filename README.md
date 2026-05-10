@@ -105,15 +105,24 @@ skew has benign causes. The confidence rubric is documented in
 ## Quick start
 
 ```bash
-cd api-support-debug-lab
-cargo run -- list-cases
-cargo run -- diagnose auth_missing
-cargo run -- diagnose webhook_signature_invalid_stale --format json | jq
-cargo run -- corpus fixtures/cases | tail -25
-cargo test
+cargo install api-debug-lab
+api-debug-lab list-cases
+api-debug-lab diagnose auth_missing
+api-debug-lab diagnose webhook_signature_invalid_stale --format json | jq
 ```
 
 Requires a stable Rust toolchain (1.78+). No service to start, no Docker.
+The bundled fixtures are embedded in the installed binary; pass
+`--fixtures <dir>` to diagnose a local fixture directory instead.
+
+From a source checkout:
+
+```bash
+cargo run -- list-cases
+cargo run -- diagnose auth_missing
+cargo run -- corpus fixtures/cases | tail -25
+cargo test
+```
 
 ## Failure cases
 

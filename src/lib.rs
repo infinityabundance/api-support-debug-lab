@@ -54,6 +54,7 @@
 #![deny(missing_docs)]
 
 pub mod cases;
+mod embedded;
 pub mod evidence;
 pub mod report;
 pub mod rules;

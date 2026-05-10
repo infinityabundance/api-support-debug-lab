@@ -337,6 +337,9 @@ impl Case {
                 if neg_dir.is_dir() {
                     neg_dir.join("case.json")
                 } else {
+                    if let Some(case) = crate::embedded::load(name_or_path) {
+                        return Ok(case);
+                    }
                     return Err(CaseLoadError::UnknownCase(name_or_path.to_string()));
                 }
             }
@@ -370,6 +373,7 @@ impl Case {
         self.log_path
             .as_ref()
             .and_then(|p| fs::read_to_string(p).ok())
+            .or_else(|| crate::embedded::log_for(&self.name, &self.fixture_dir))
     }
 
     /// Read the webhook signing secret (`fixture_dir/<secret_path>`).
@@ -380,8 +384,10 @@ impl Case {
     pub fn load_secret(&self) -> Option<Vec<u8>> {
         let webhook = self.context.webhook.as_ref()?;
         let path = self.fixture_dir.join(&webhook.secret_path);
-        let raw = fs::read_to_string(path).ok()?;
-        Some(raw.trim_end_matches('\n').as_bytes().to_vec())
+        fs::read_to_string(path)
+            .ok()
+            .map(|raw| raw.trim_end_matches('\n').as_bytes().to_vec())
+            .or_else(|| crate::embedded::secret_for(&self.name, &self.fixture_dir))
     }
 }
 
@@ -397,7 +403,7 @@ impl Case {
 pub fn list_cases(fixtures_root: &Path) -> Vec<String> {
     let cases_dir = fixtures_root.join("cases");
     let Ok(entries) = fs::read_dir(&cases_dir) else {
-        return Vec::new();
+        return crate::embedded::positive_names();
     };
     let mut names: Vec<String> = entries
         .filter_map(|e| e.ok())
