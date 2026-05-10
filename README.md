@@ -2,6 +2,15 @@
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/infinityabundance/api-support-debug-lab/blob/be248675902c3d0760e562d3c67366c6eb111b87/colab/api_debug_lab_latest.ipynb)
 
+**Try it now (no install required)**
+
+Click the **Open in Colab** badge above.
+
+1. Open the Colab notebook
+2. Click ► Run all
+
+---
+
 A reproducible developer-support debugging lab. The repository contains
 intentionally-failing API request fixtures (request, response, server log)
 and a Rust diagnostic CLI that classifies the failure, recomputes the
