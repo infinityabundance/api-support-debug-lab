@@ -1,6 +1,6 @@
 # API Support Debug Lab
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/infinityabundance/api-support-debug-lab/blob/main/colab/api_debug_lab_latest.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/infinityabundance/api-support-debug-lab/blob/be248675902c3d0760e562d3c67366c6eb111b87/colab/api_debug_lab_latest.ipynb)
 
 A reproducible developer-support debugging lab. The repository contains
 intentionally-failing API request fixtures (request, response, server log)
